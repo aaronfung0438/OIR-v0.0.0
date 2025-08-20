@@ -1,0 +1,231 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('confirm_data') }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Basic Info' if current_lang == 'en' else '基本資訊' if current_lang == 'zh-TW' else '基本信息' }}</span>
+            </div>
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Data Input' if current_lang == 'en' else '數據輸入' if current_lang == 'zh-TW' else '数据输入' }}</span>
+            </div>
+            <div class="step active">
+                <div class="step-number">3</div>
+                <span>{{ 'Confirm' if current_lang == 'en' else '確認' if current_lang == 'zh-TW' else '确认' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <span>{{ 'Preview' if current_lang == 'en' else '預覽' if current_lang == 'zh-TW' else '预览' }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-check-circle me-2"></i>{{ get_text('confirm_data') }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Basic Information Summary -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5>{{ 'Basic Information' if current_lang == 'en' else '基本資訊' if current_lang == 'zh-TW' else '基本信息' }}</h5>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th class="bg-light" style="width: 20%;">{{ get_text('model_no') }}</th>
+                                        <td>{{ report_data.model_no }}</td>
+                                        <th class="bg-light" style="width: 20%;">{{ get_text('ois_no') }}</th>
+                                        <td>{{ report_data.ois_no }}</td>
+                                    </tr>
+                                    <tr>
+                                        <th class="bg-light">{{ get_text('inspector') }}</th>
+                                        <td>{{ report_data.inspector }}</td>
+                                        <th class="bg-light">{{ get_text('date') }}</th>
+                                        <td id="currentDate"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Summary -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5>{{ 'Inspection Data Summary' if current_lang == 'en' else '檢驗數據摘要' if current_lang == 'zh-TW' else '检验数据摘要' }}</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped data-table">
+                                <thead>
+                                    <tr>
+                                        <th>{{ get_text('item') }}</th>
+                                        <th>{{ get_text('description') }}</th>
+                                        <th>{{ 'Range' if current_lang == 'en' else '範圍' if current_lang == 'zh-TW' else '范围' }}</th>
+                                        <th>{{ get_text('unit') }}</th>
+                                        <th>{{ 'Data Points' if current_lang == 'en' else '數據點' if current_lang == 'zh-TW' else '数据点' }}</th>
+                                        <th>{{ 'Count' if current_lang == 'en' else '數量' if current_lang == 'zh-TW' else '数量' }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item_key, item_data in report_data.items_data.items() %}
+                                    <tr>
+                                        <td><strong>{{ item_data.item }}</strong></td>
+                                        <td>{{ item_data.description }}</td>
+                                        <td>{{ item_data.min_limit }} - {{ item_data.max_limit }}</td>
+                                        <td>{{ item_data.unit }}</td>
+                                        <td>
+                                            <div class="d-flex flex-wrap gap-1">
+                                                {% for datapoint in item_data.datapoints %}
+                                                    {% if datapoint is not none %}
+                                                        <span class="badge bg-secondary">{{ datapoint }}</span>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="badge bg-primary" id="count-{{ loop.index0 }}">
+                                                0 / 10
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Additional Information Form -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5>{{ 'Additional Information' if current_lang == 'en' else '額外資訊' if current_lang == 'zh-TW' else '额外信息' }}</h5>
+                        <form id="additionalInfoForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="order_no" class="form-label">
+                                        <i class="fas fa-receipt me-1"></i>{{ get_text('order_no') }} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="order_no" 
+                                           name="order_no" 
+                                           required 
+                                           placeholder="{{ 'e.g. 9236081473/14755/1474-1.1' if current_lang == 'en' else '例如：9236081473/14755/1474-1.1' }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="shipment_size" class="form-label">
+                                        <i class="fas fa-boxes me-1"></i>{{ get_text('shipment_size') }} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="shipment_size" 
+                                           name="shipment_size" 
+                                           required 
+                                           placeholder="{{ 'e.g. 1680*3' if current_lang == 'en' else '例如：1680*3' }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="lot_no" class="form-label">
+                                        <i class="fas fa-tag me-1"></i>{{ get_text('lot_no') }} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="lot_no" 
+                                           name="lot_no" 
+                                           required 
+                                           placeholder="{{ 'Enter lot number' if current_lang == 'en' else '輸入批號' if current_lang == 'zh-TW' else '输入批号' }}">
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label for="location" class="form-label">
+                                        <i class="fas fa-map-marker-alt me-1"></i>{{ get_text('location') }} <span class="text-danger">*</span>
+                                    </label>
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="location" 
+                                           name="location" 
+                                           required 
+                                           placeholder="{{ 'e.g. W2ATMCA18#' if current_lang == 'en' else '例如：W2ATMCA18#' }}">
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('data_input') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                    </a>
+                    <button type="button" class="btn btn-primary" onclick="submitAdditionalInfo()">
+                        {{ get_text('next') }} <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Set current date
+    const today = new Date().toISOString().split('T')[0];
+    $('#currentDate').text(today);
+    
+    // Calculate data point counts
+    {% for item_key, item_data in report_data.items_data.items() %}
+    let count{{ loop.index0 }} = 0;
+    {% for datapoint in item_data.datapoints %}
+        {% if datapoint is not none %}
+        count{{ loop.index0 }}++;
+        {% endif %}
+    {% endfor %}
+    $('#count-{{ loop.index0 }}').text(count{{ loop.index0 }} + ' / 10');
+    {% endfor %}
+});
+
+function submitAdditionalInfo() {
+    const form = document.getElementById('additionalInfoForm');
+    const formData = new FormData(form);
+    
+    // Validate required fields
+    const requiredFields = ['order_no', 'shipment_size', 'lot_no', 'location'];
+    for (const field of requiredFields) {
+        if (!formData.get(field) || formData.get(field).trim() === '') {
+            alert('{{ "Please fill in all required fields" if current_lang == "en" else "請填寫所有必填欄位" if current_lang == "zh-TW" else "请填写所有必填字段" }}');
+            document.getElementById(field).focus();
+            return;
+        }
+    }
+    
+    // Submit via AJAX
+    $.ajax({
+        url: '{{ url_for("submit_confirm_data") }}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            if (response.success) {
+                window.location.href = response.redirect;
+            } else {
+                alert(response.message || '{{ get_text("error") }}');
+            }
+        },
+        error: function() {
+            alert('{{ get_text("error") }}');
+        }
+    });
+}
+</script>
+{% endblock %}

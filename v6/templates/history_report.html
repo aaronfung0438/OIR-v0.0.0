@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('history_report') }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-history me-2"></i>{{ get_text('history_search') }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('search_history') }}" id="historySearchForm">
+                    <div class="row g-3">
+                        <!-- Date Range -->
+                        <div class="col-md-6">
+                            <label for="date_from" class="form-label">
+                                <i class="fas fa-calendar me-1"></i>{{ get_text('date_from') }}
+                            </label>
+                            <input type="date" class="form-control" id="date_from" name="date_from">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label for="date_to" class="form-label">
+                                <i class="fas fa-calendar me-1"></i>{{ get_text('date_to') }}
+                            </label>
+                            <input type="date" class="form-control" id="date_to" name="date_to">
+                        </div>
+
+                        <!-- Model No. -->
+                        <div class="col-md-6">
+                            <label for="model_no" class="form-label">
+                                <i class="fas fa-barcode me-1"></i>{{ get_text('model_no') }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="model_no" 
+                                   name="model_no" 
+                                   placeholder="{{ 'Enter model number' if current_lang == 'en' else '輸入型號' if current_lang == 'zh-TW' else '输入型号' }}">
+                        </div>
+
+                        <!-- Lot No. -->
+                        <div class="col-md-6">
+                            <label for="lot_no" class="form-label">
+                                <i class="fas fa-tag me-1"></i>{{ get_text('lot_no') }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="lot_no" 
+                                   name="lot_no" 
+                                   placeholder="{{ 'Enter lot number' if current_lang == 'en' else '輸入批號' if current_lang == 'zh-TW' else '输入批号' }}">
+                        </div>
+
+                        <!-- Operator -->
+                        <div class="col-md-6">
+                            <label for="operator" class="form-label">
+                                <i class="fas fa-user me-1"></i>{{ get_text('operator') }}
+                            </label>
+                            <select class="form-select" id="operator" name="operator">
+                                <option value="">{{ 'All operators' if current_lang == 'en' else '所有操作員' if current_lang == 'zh-TW' else '所有操作员' }}</option>
+                                <option value="Aaron">Aaron</option>
+                                <option value="Alan">Alan</option>
+                                <option value="Brain">Brain</option>
+                            </select>
+                        </div>
+
+                        <!-- Quick Date Filters -->
+                        <div class="col-md-6">
+                            <label class="form-label">
+                                <i class="fas fa-clock me-1"></i>{{ 'Quick Filters' if current_lang == 'en' else '快速篩選' if current_lang == 'zh-TW' else '快速筛选' }}
+                            </label>
+                            <div class="btn-group d-block" role="group">
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('today')">
+                                    {{ 'Today' if current_lang == 'en' else '今天' if current_lang == 'zh-TW' else '今天' }}
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('week')">
+                                    {{ 'This Week' if current_lang == 'en' else '本週' if current_lang == 'zh-TW' else '本周' }}
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary btn-sm" onclick="setDateRange('month')">
+                                    {{ 'This Month' if current_lang == 'en' else '本月' if current_lang == 'zh-TW' else '本月' }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search Instructions -->
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{{ 'Search Instructions:' if current_lang == 'en' else '搜尋說明：' if current_lang == 'zh-TW' else '搜索说明：' }}</strong>
+                        <ul class="mb-0 mt-2">
+                            <li>{{ 'Leave fields empty to search all records' if current_lang == 'en' else '留空欄位以搜尋所有記錄' if current_lang == 'zh-TW' else '留空字段以搜索所有记录' }}</li>
+                            <li>{{ 'Use partial matches for model and lot numbers' if current_lang == 'en' else '型號和批號支援部分匹配' if current_lang == 'zh-TW' else '型号和批号支持部分匹配' }}</li>
+                            <li>{{ 'Date range is inclusive (includes both start and end dates)' if current_lang == 'en' else '日期範圍包含起始和結束日期' if current_lang == 'zh-TW' else '日期范围包含起始和结束日期' }}</li>
+                        </ul>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-secondary me-2" onclick="clearForm()">
+                                <i class="fas fa-eraser me-2"></i>{{ 'Clear' if current_lang == 'en' else '清除' if current_lang == 'zh-TW' else '清除' }}
+                            </button>
+                            <button type="submit" class="btn btn-info">
+                                <i class="fas fa-search me-2"></i>{{ get_text('search') }}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Set default date range to current month
+    setDateRange('month');
+});
+
+function setDateRange(period) {
+    const today = new Date();
+    const dateFrom = document.getElementById('date_from');
+    const dateTo = document.getElementById('date_to');
+    
+    switch(period) {
+        case 'today':
+            const todayStr = today.toISOString().split('T')[0];
+            dateFrom.value = todayStr;
+            dateTo.value = todayStr;
+            break;
+            
+        case 'week':
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay());
+            const weekEnd = new Date(weekStart);
+            weekEnd.setDate(weekStart.getDate() + 6);
+            
+            dateFrom.value = weekStart.toISOString().split('T')[0];
+            dateTo.value = weekEnd.toISOString().split('T')[0];
+            break;
+            
+        case 'month':
+            const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+            const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+            
+            dateFrom.value = monthStart.toISOString().split('T')[0];
+            dateTo.value = monthEnd.toISOString().split('T')[0];
+            break;
+    }
+}
+
+function clearForm() {
+    document.getElementById('historySearchForm').reset();
+}
+
+// Form validation
+$('#historySearchForm').on('submit', function(e) {
+    const dateFrom = $('#date_from').val();
+    const dateTo = $('#date_to').val();
+    
+    if (dateFrom && dateTo && dateFrom > dateTo) {
+        e.preventDefault();
+        alert('{{ "End date must be after start date" if current_lang == "en" else "結束日期必須在起始日期之後" if current_lang == "zh-TW" else "结束日期必须在起始日期之后" }}');
+        return false;
+    }
+});
+</script>
+{% endblock %}
+

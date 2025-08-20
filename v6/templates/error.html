@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Error' if current_lang == 'en' else '錯誤' if current_lang == 'zh-TW' else '错误' }} {{ error_code }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="text-center">
+            <div class="mb-4">
+                <i class="fas fa-exclamation-triangle text-warning" style="font-size: 5rem;"></i>
+            </div>
+            
+            <h1 class="display-4 text-muted">{{ 'Error' if current_lang == 'en' else '錯誤' if current_lang == 'zh-TW' else '错误' }} {{ error_code }}</h1>
+            
+            {% if error_code == 404 %}
+            <h3 class="mb-4">{{ 'Page Not Found' if current_lang == 'en' else '頁面未找到' if current_lang == 'zh-TW' else '页面未找到' }}</h3>
+            <p class="lead text-muted">
+                {{ 'The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.' if current_lang == 'en' else '您所尋找的頁面可能已被移除、名稱已更改，或暫時無法使用。' if current_lang == 'zh-TW' else '您所寻找的页面可能已被移除、名称已更改，或暂时无法使用。' }}
+            </p>
+            {% elif error_code == 500 %}
+            <h3 class="mb-4">{{ 'Internal Server Error' if current_lang == 'en' else '內部伺服器錯誤' if current_lang == 'zh-TW' else '内部服务器错误' }}</h3>
+            <p class="lead text-muted">
+                {{ 'Something went wrong on our servers. Please try again later.' if current_lang == 'en' else '伺服器發生錯誤。請稍後再試。' if current_lang == 'zh-TW' else '服务器发生错误。请稍后再试。' }}
+            </p>
+            {% else %}
+            <h3 class="mb-4">{{ 'Something went wrong' if current_lang == 'en' else '發生錯誤' if current_lang == 'zh-TW' else '发生错误' }}</h3>
+            <p class="lead text-muted">
+                {{ 'An unexpected error occurred. Please try again.' if current_lang == 'en' else '發生未預期的錯誤。請重試。' if current_lang == 'zh-TW' else '发生未预期的错误。请重试。' }}
+            </p>
+            {% endif %}
+            
+            <div class="mt-5">
+                <a href="{{ url_for('index') }}" class="btn btn-primary btn-lg me-3">
+                    <i class="fas fa-home me-2"></i>{{ 'Go Home' if current_lang == 'en' else '回首頁' if current_lang == 'zh-TW' else '回首页' }}
+                </a>
+                <button onclick="history.back()" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left me-2"></i>{{ 'Go Back' if current_lang == 'en' else '返回' if current_lang == 'zh-TW' else '返回' }}
+                </button>
+            </div>
+        </div>
+        
+        <!-- Helpful Links -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ 'What can you do?' if current_lang == 'en' else '您可以做什麼？' if current_lang == 'zh-TW' else '您可以做什么？' }}</h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="p-3">
+                                    <i class="fas fa-plus-circle text-primary mb-2" style="font-size: 2rem;"></i>
+                                    <h6>{{ 'Create New Report' if current_lang == 'en' else '建立新報告' if current_lang == 'zh-TW' else '创建新报告' }}</h6>
+                                    <a href="{{ url_for('new_report') }}" class="btn btn-sm btn-outline-primary">
+                                        {{ 'Start Now' if current_lang == 'en' else '立即開始' if current_lang == 'zh-TW' else '立即开始' }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3">
+                                    <i class="fas fa-history text-success mb-2" style="font-size: 2rem;"></i>
+                                    <h6>{{ 'Search History' if current_lang == 'en' else '搜尋歷史' if current_lang == 'zh-TW' else '搜索历史' }}</h6>
+                                    <a href="{{ url_for('history_report') }}" class="btn btn-sm btn-outline-success">
+                                        {{ 'Search Now' if current_lang == 'en' else '立即搜尋' if current_lang == 'zh-TW' else '立即搜索' }}
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="p-3">
+                                    <i class="fas fa-home text-info mb-2" style="font-size: 2rem;"></i>
+                                    <h6>{{ 'Return Home' if current_lang == 'en' else '返回首頁' if current_lang == 'zh-TW' else '返回首页' }}</h6>
+                                    <a href="{{ url_for('index') }}" class="btn btn-sm btn-outline-info">
+                                        {{ 'Go Home' if current_lang == 'en' else '回首頁' if current_lang == 'zh-TW' else '回首页' }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Auto-redirect after 10 seconds for 404 errors
+{% if error_code == 404 %}
+setTimeout(function() {
+    window.location.href = '{{ url_for("index") }}';
+}, 10000);
+{% endif %}
+</script>
+{% endblock %}
+

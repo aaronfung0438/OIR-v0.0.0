@@ -1,0 +1,333 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('data_input') }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Basic Info' if current_lang == 'en' else '基本資訊' if current_lang == 'zh-TW' else '基本信息' }}</span>
+            </div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <span>{{ 'Data Input' if current_lang == 'en' else '數據輸入' if current_lang == 'zh-TW' else '数据输入' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>{{ 'Confirm' if current_lang == 'en' else '確認' if current_lang == 'zh-TW' else '确认' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <span>{{ 'Preview' if current_lang == 'en' else '預覽' if current_lang == 'zh-TW' else '预览' }}</span>
+            </div>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h6 class="mb-0">{{ 'Progress' if current_lang == 'en' else '進度' if current_lang == 'zh-TW' else '进度' }}</h6>
+                    <small class="text-muted">{{ get_text('item') }} {{ current_item }} / {{ total_items }}</small>
+                </div>
+                <div class="progress">
+                    <div class="progress-bar" 
+                         role="progressbar" 
+                         style="width: {{ (current_item / total_items * 100) | round }}%"
+                         aria-valuenow="{{ current_item }}" 
+                         aria-valuemin="0" 
+                         aria-valuemax="{{ total_items }}">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-keyboard me-2"></i>{{ get_text('data_input') }} - {{ get_text('item') }} {{ item_data.Item }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <!-- Item Information -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="alert alert-light border">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <strong>{{ get_text('description') }}:</strong> {{ item_data.Description }}<br>
+                                    <strong>{{ get_text('unit') }}:</strong> {{ item_data.Unit }}
+                                </div>
+                                <div class="col-md-6">
+                                    <strong>{{ get_text('minimum') }}:</strong> {{ item_data['Minimum Limit'] }}<br>
+                                    <strong>{{ get_text('maximum') }}:</strong> {{ item_data['Maximum Limit'] }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Input Form -->
+                <form id="dataInputForm">
+                    <div class="mb-4">
+                        <h5 class="mb-3">
+                            <i class="fas fa-list-ol me-2"></i>{{ 'Enter 10 Data Points' if current_lang == 'en' else '輸入10個數據點' if current_lang == 'zh-TW' else '输入10个数据点' }}
+                        </h5>
+                        
+                        <div class="data-input-grid">
+                            {% for i in range(1, 11) %}
+                            <div class="mb-3">
+                                <label for="datapoint_{{ i }}" class="form-label small">{{ get_text('datapoint') }} {{ i }}</label>
+                                <input type="text" 
+                                       class="form-control datapoint-input" 
+                                       id="datapoint_{{ i }}" 
+                                       name="datapoint_{{ i }}"
+                                       placeholder="0.000"
+                                       value="{{ existing_data.datapoints[i-1] if existing_data.datapoints and existing_data.datapoints[i-1] is not none else '' }}"
+                                       data-index="{{ i }}">
+                                <div class="invalid-feedback" id="error_{{ i }}"></div>
+                                <div class="valid-feedback" id="success_{{ i }}">{{ 'Valid number' if current_lang == 'en' else '有效數字' if current_lang == 'zh-TW' else '有效数字' }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Quick Fill Options -->
+                    <div class="mb-4">
+                        <h6>{{ 'Quick Fill Options' if current_lang == 'en' else '快速填入選項' if current_lang == 'zh-TW' else '快速填入选项' }}</h6>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="fillAllSame()">
+                                {{ 'Fill All Same' if current_lang == 'en' else '填入相同值' if current_lang == 'zh-TW' else '填入相同值' }}
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAll()">
+                                {{ 'Clear All' if current_lang == 'en' else '清空全部' if current_lang == 'zh-TW' else '清空全部' }}
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="fillSequential()">
+                                {{ 'Sequential Fill' if current_lang == 'en' else '序列填入' if current_lang == 'zh-TW' else '序列填入' }}
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Statistics Display -->
+                    <div class="row mb-4" id="statisticsDisplay" style="display: none;">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <h6>{{ 'Statistics' if current_lang == 'en' else '統計' if current_lang == 'zh-TW' else '统计' }}</h6>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>{{ get_text('average') }}:</strong> <span id="avgValue">-</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>{{ get_text('minimum') }}:</strong> <span id="minValue">-</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>{{ get_text('maximum') }}:</strong> <span id="maxValue">-</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>{{ 'Count' if current_lang == 'en' else '數量' if current_lang == 'zh-TW' else '数量' }}:</strong> <span id="countValue">0</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{{ url_for('data_input_back') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                        </a>
+                        <div>
+                            <button type="button" class="btn btn-outline-primary me-2" onclick="calculateStats()">
+                                <i class="fas fa-calculator me-2"></i>{{ 'Calculate Stats' if current_lang == 'en' else '計算統計' if current_lang == 'zh-TW' else '计算统计' }}
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                {{ get_text('next') }} <i class="fas fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Auto-calculate statistics when inputs change
+    // Real-time validation and statistics calculation
+    $('.datapoint-input').on('input', function() {
+        const index = $(this).data('index');
+        const value = $(this).val().trim();
+        validateDatapoint(this, index, value);
+        calculateStats();
+    });
+    
+    // Validate on blur (when user leaves field)
+    $('.datapoint-input').on('blur', function() {
+        const index = $(this).data('index');
+        const value = $(this).val().trim();
+        validateDatapoint(this, index, value);
+    });
+    
+    // Form submission
+    $('#dataInputForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Collect all data points
+        const formData = new FormData(this);
+        
+        // Enhanced validation using the new validation function
+        if (!validateAllDatapoints()) {
+            return;
+        }
+        
+        // Submit via AJAX
+        $.ajax({
+            url: '{{ url_for("submit_data_input") }}',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = response.redirect;
+                } else {
+                    alert(response.message || '{{ get_text("error") }}');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.log('AJAX Error:', xhr.responseText);
+                alert('Error: ' + xhr.responseText || '{{ get_text("error") }}');
+            }
+        });
+    });
+});
+
+function fillAllSame() {
+    const value = prompt('{{ "Enter value to fill all fields:" if current_lang == "en" else "輸入要填入所有欄位的值：" if current_lang == "zh-TW" else "输入要填入所有字段的值：" }}');
+    if (value !== null && value !== '') {
+        for (let i = 1; i <= 10; i++) {
+            $(`#datapoint_${i}`).val(value);
+        }
+        calculateStats();
+    }
+}
+
+function clearAll() {
+    if (confirm('{{ "Are you sure you want to clear all data points?" if current_lang == "en" else "確定要清空所有數據點嗎？" if current_lang == "zh-TW" else "确定要清空所有数据点吗？" }}')) {
+        for (let i = 1; i <= 10; i++) {
+            $(`#datapoint_${i}`).val('');
+        }
+        calculateStats();
+    }
+}
+
+function fillSequential() {
+    const start = parseFloat(prompt('{{ "Enter starting value:" if current_lang == "en" else "輸入起始值：" if current_lang == "zh-TW" else "输入起始值：" }}')) || 0;
+    const increment = parseFloat(prompt('{{ "Enter increment:" if current_lang == "en" else "輸入增量：" if current_lang == "zh-TW" else "输入增量：" }}')) || 0.1;
+    
+    for (let i = 1; i <= 10; i++) {
+        $(`#datapoint_${i}`).val((start + (i - 1) * increment).toFixed(3));
+    }
+    calculateStats();
+}
+
+function calculateStats() {
+    const values = [];
+    
+    for (let i = 1; i <= 10; i++) {
+        const value = parseFloat($(`#datapoint_${i}`).val());
+        if (!isNaN(value)) {
+            values.push(value);
+        }
+    }
+    
+    if (values.length > 0) {
+        const avg = values.reduce((a, b) => a + b, 0) / values.length;
+        const min = Math.min(...values);
+        const max = Math.max(...values);
+        
+        $('#avgValue').text(avg.toFixed(3));
+        $('#minValue').text(min.toFixed(3));
+        $('#maxValue').text(max.toFixed(3));
+        $('#countValue').text(values.length);
+        $('#statisticsDisplay').show();
+    } else {
+        $('#statisticsDisplay').hide();
+    }
+}
+
+// Validation function for datapoints
+function validateDatapoint(input, index, value) {
+    const $input = $(input);
+    const $errorDiv = $(`#error_${index}`);
+    const $successDiv = $(`#success_${index}`);
+    
+    // Clear previous states
+    $input.removeClass('is-valid is-invalid');
+    $errorDiv.text('');
+    
+    if (value === '') {
+        // Empty is allowed, no validation needed
+        return true;
+    }
+    
+    // Check if it's a valid number
+    const numValue = parseFloat(value);
+    
+    if (isNaN(numValue)) {
+        // Invalid number
+        $input.addClass('is-invalid');
+        $errorDiv.text('{{ "Invalid number format. Please enter a valid number." if current_lang == "en" else "無效的數字格式。請輸入有效數字。" if current_lang == "zh-TW" else "无效的数字格式。请输入有效数字。" }}');
+        return false;
+    }
+    
+    // Check for reasonable range (optional)
+    if (numValue < -999999 || numValue > 999999) {
+        $input.addClass('is-invalid');
+        $errorDiv.text('{{ "Number out of range (-999999 to 999999)" if current_lang == "en" else "數字超出範圍 (-999999 到 999999)" if current_lang == "zh-TW" else "数字超出范围 (-999999 到 999999)" }}');
+        return false;
+    }
+    
+    // Valid number
+    $input.addClass('is-valid');
+    return true;
+}
+
+// Enhanced form validation
+function validateAllDatapoints() {
+    let isValid = true;
+    let hasData = false;
+    
+    for (let i = 1; i <= 10; i++) {
+        const $input = $(`#datapoint_${i}`);
+        const value = $input.val().trim();
+        
+        if (value !== '') {
+            hasData = true;
+            if (!validateDatapoint($input[0], i, value)) {
+                isValid = false;
+            }
+        }
+    }
+    
+    if (!hasData) {
+        alert('{{ "You must enter at least one data point to continue to the next item" if current_lang == "en" else "您必須至少輸入一個數據點才能繼續到下一個項目" if current_lang == "zh-TW" else "您必须至少输入一个数据点才能继续到下一个项目" }}');
+        // Highlight the first empty field
+        $(`#datapoint_1`).focus();
+        return false;
+    }
+    
+    if (!isValid) {
+        alert('{{ "Please fix the validation errors before submitting" if current_lang == "en" else "請修正驗證錯誤後再提交" if current_lang == "zh-TW" else "请修正验证错误后再提交" }}');
+        return false;
+    }
+    
+    return true;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,144 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('new_report') }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step active">
+                <div class="step-number">1</div>
+                <span>{{ 'Basic Info' if current_lang == 'en' else '基本資訊' if current_lang == 'zh-TW' else '基本信息' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <span>{{ 'Data Input' if current_lang == 'en' else '數據輸入' if current_lang == 'zh-TW' else '数据输入' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>{{ 'Confirm' if current_lang == 'en' else '確認' if current_lang == 'zh-TW' else '确认' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">4</div>
+                <span>{{ 'Preview' if current_lang == 'en' else '預覽' if current_lang == 'zh-TW' else '预览' }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ get_text('new_report') }} - {{ 'Step 1: Basic Information' if current_lang == 'en' else '步驟 1：基本資訊' if current_lang == 'zh-TW' else '步骤 1：基本信息' }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('new_report_step1') }}" id="basicInfoForm">
+                    <div class="row g-4">
+                        <!-- Model No. -->
+                        <div class="col-md-6">
+                            <label for="model_no" class="form-label">
+                                <i class="fas fa-barcode me-1"></i>{{ get_text('model_no') }} <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="model_no" 
+                                   name="model_no" 
+                                   required 
+                                   placeholder="{{ 'e.g. 1999-1130111' if current_lang == 'en' else '例如：1999-1130111' }}">
+                            <div class="form-text">{{ 'Enter the model code' if current_lang == 'en' else '輸入型號代碼' if current_lang == 'zh-TW' else '输入型号代码' }}</div>
+                        </div>
+
+                        <!-- OIS No. -->
+                        <div class="col-md-6">
+                            <label for="ois_no" class="form-label">
+                                <i class="fas fa-file-alt me-1"></i>{{ get_text('ois_no') }} <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="ois_no" 
+                                   name="ois_no" 
+                                   required 
+                                   placeholder="{{ 'e.g. DCCDC-IS-11301110' if current_lang == 'en' else '例如：DCCDC-IS-11301110' }}">
+                            <div class="form-text">{{ 'Enter the OIS number' if current_lang == 'en' else '輸入OIS編號' if current_lang == 'zh-TW' else '输入OIS编号' }}</div>
+                        </div>
+
+                        <!-- Inspector -->
+                        <div class="col-md-6">
+                            <label for="inspector" class="form-label">
+                                <i class="fas fa-user me-1"></i>{{ get_text('inspector') }} <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="inspector" name="inspector" required>
+                                <option value="">{{ 'Select inspector' if current_lang == 'en' else '選擇檢驗員' if current_lang == 'zh-TW' else '选择检验员' }}</option>
+                                <option value="Aaron">{{ get_text('aaron') }}</option>
+                                <option value="Alan">{{ get_text('alan') }}</option>
+                                <option value="Brain">{{ get_text('brain') }}</option>
+                            </select>
+                            <div class="form-text">{{ 'Select the inspector name' if current_lang == 'en' else '選擇檢驗員姓名' if current_lang == 'zh-TW' else '选择检验员姓名' }}</div>
+                        </div>
+
+                        <!-- Date (Auto-filled) -->
+                        <div class="col-md-6">
+                            <label for="date" class="form-label">
+                                <i class="fas fa-calendar me-1"></i>{{ get_text('date') }}
+                            </label>
+                            <input type="date" 
+                                   class="form-control" 
+                                   id="date" 
+                                   name="date" 
+                                   readonly 
+                                   value=""
+                                   readonly>
+                            <div class="form-text">{{ 'Today\'s date (auto-filled)' if current_lang == 'en' else '今日日期（自動填入）' if current_lang == 'zh-TW' else '今日日期（自动填入）' }}</div>
+                        </div>
+                    </div>
+
+                    <!-- Information Box -->
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>{{ 'Note:' if current_lang == 'en' else '注意：' if current_lang == 'zh-TW' else '注意：' }}</strong>
+                        {{ 'Please ensure the OIS number exists in the database. The system will verify this information before proceeding to data input.' if current_lang == 'en' else '請確保OIS編號在資料庫中存在。系統將在進入數據輸入前驗證此資訊。' if current_lang == 'zh-TW' else '请确保OIS编号在数据库中存在。系统将在进入数据输入前验证此信息。' }}
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            {{ get_text('next') }} <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Set today's date
+    const today = new Date().toISOString().split('T')[0];
+    $('#date').val(today);
+    
+    // Form validation
+    $('#basicInfoForm').on('submit', function(e) {
+        const modelNo = $('#model_no').val().trim();
+        const oisNo = $('#ois_no').val().trim();
+        const inspector = $('#inspector').val();
+        
+        if (!modelNo || !oisNo || !inspector) {
+            e.preventDefault();
+            alert('{{ "Please fill in all required fields" if current_lang == "en" else "請填寫所有必填欄位" if current_lang == "zh-TW" else "请填写所有必填字段" }}');
+            return false;
+        }
+    });
+    
+    // Auto-format inputs
+    $('#model_no, #ois_no').on('input', function() {
+        $(this).val($(this).val().toUpperCase());
+    });
+});
+</script>
+{% endblock %}

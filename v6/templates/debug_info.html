@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Debug Info - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0">
+                    <i class="fas fa-bug me-2"></i>Debug Information
+                </h4>
+            </div>
+            <div class="card-body">
+                <h5>Session Data:</h5>
+                <pre id="sessionData">{{ session | tojson(indent=2) }}</pre>
+                
+                <h5 class="mt-4">Available OIS Numbers:</h5>
+                <div id="oisNumbers">
+                    <button class="btn btn-sm btn-outline-primary" onclick="loadOISNumbers()">Load OIS Numbers</button>
+                </div>
+                
+                <h5 class="mt-4">Test Data Submission:</h5>
+                <form id="testForm">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <label>Model No:</label>
+                            <input type="text" class="form-control" name="model_no" value="1999-1130111">
+                        </div>
+                        <div class="col-md-4">
+                            <label>OIS No:</label>
+                            <input type="text" class="form-control" name="ois_no" value="DCCDC-IS-11301110">
+                        </div>
+                        <div class="col-md-4">
+                            <label>Inspector:</label>
+                            <select class="form-control" name="inspector">
+                                <option value="Aaron">Aaron</option>
+                                <option value="Alan">Alan</option>
+                                <option value="Brain">Brain</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary mt-3" onclick="testSubmission()">Test Submission</button>
+                </form>
+                
+                <h5 class="mt-4">Console Log:</h5>
+                <div id="consoleLog" style="background: #f8f9fa; padding: 10px; border: 1px solid #dee2e6; height: 200px; overflow-y: auto;">
+                    <p>Ready for testing...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function log(message) {
+    const logDiv = document.getElementById('consoleLog');
+    const timestamp = new Date().toLocaleTimeString();
+    logDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+    logDiv.scrollTop = logDiv.scrollHeight;
+}
+
+function loadOISNumbers() {
+    log('Loading OIS numbers...');
+    $.ajax({
+        url: '/api/debug/ois_numbers',
+        type: 'GET',
+        success: function(response) {
+            log('OIS numbers loaded successfully');
+            document.getElementById('oisNumbers').innerHTML = 
+                '<ul>' + response.map(ois => `<li>${ois}</li>`).join('') + '</ul>';
+        },
+        error: function(xhr, status, error) {
+            log('Error loading OIS numbers: ' + xhr.responseText);
+        }
+    });
+}
+
+function testSubmission() {
+    log('Testing form submission...');
+    const formData = new FormData(document.getElementById('testForm'));
+    
+    $.ajax({
+        url: '{{ url_for("new_report_step1") }}',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(response) {
+            log('Form submission successful');
+            if (response.redirect) {
+                window.location.href = response.redirect;
+            }
+        },
+        error: function(xhr, status, error) {
+            log('Form submission error: ' + xhr.responseText);
+            console.error('Full error:', xhr);
+        }
+    });
+}
+
+// Auto-refresh session data every 5 seconds
+setInterval(function() {
+    $.get('/api/debug/session', function(data) {
+        document.getElementById('sessionData').textContent = JSON.stringify(data, null, 2);
+    });
+}, 5000);
+</script>
+{% endblock %}

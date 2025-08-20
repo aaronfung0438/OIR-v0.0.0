@@ -1,0 +1,32 @@
+# 基礎依賴 - 先安裝 numpy 避免編譯問題
+numpy==1.24.3
+
+# Flask Web Framework
+Flask==3.1.1
+Werkzeug==3.1.3
+
+# Flask dependencies
+Jinja2==3.1.6
+MarkupSafe==3.0.2
+itsdangerous==2.2.0
+click==8.2.1
+blinker==1.9.0
+
+# Excel file handling
+openpyxl==3.1.5
+xlsxwriter==3.2.5
+et_xmlfile==2.0.0
+
+# Date and time handling
+python-dateutil==2.9.0.post0
+pytz==2025.2
+tzdata==2025.2
+
+# Data processing - 放在 numpy 之後
+pandas>=2.0.0
+
+# Additional utilities
+colorama==0.4.6
+setuptools==80.9.0
+six==1.17.0
+

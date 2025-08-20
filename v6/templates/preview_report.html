@@ -1,0 +1,233 @@
+{% extends "base.html" %}
+
+{% block title %}{{ get_text('preview') }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-12">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Basic Info' if current_lang == 'en' else '基本資訊' if current_lang == 'zh-TW' else '基本信息' }}</span>
+            </div>
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Data Input' if current_lang == 'en' else '數據輸入' if current_lang == 'zh-TW' else '数据输入' }}</span>
+            </div>
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Confirm' if current_lang == 'en' else '確認' if current_lang == 'zh-TW' else '确认' }}</span>
+            </div>
+            <div class="step active">
+                <div class="step-number">4</div>
+                <span>{{ 'Preview' if current_lang == 'en' else '預覽' if current_lang == 'zh-TW' else '预览' }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">
+                        <i class="fas fa-eye me-2"></i>{{ get_text('preview') }} - OIR Report
+                    </h4>
+                    <div>
+                        <a href="{{ url_for('generate_report') }}" class="btn btn-light btn-sm">
+                            <i class="fas fa-file-excel me-1"></i>{{ get_text('download_excel') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body p-4">
+                <!-- Report Preview -->
+                <div class="report-preview" style="background: white; padding: 2rem; border: 1px solid #dee2e6;">
+                    <!-- Report Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="text-primary mb-3">Outgoing Inspection Report</h2>
+                        <div class="row">
+                            <div class="col-md-6 text-start">
+                                <strong>Model No.:</strong> {{ report_data.model_no }}<br>
+                                <strong>OIS No.:</strong> {{ report_data.ois_no }}<br>
+                                <strong>Lot No.:</strong> {{ report_data.lot_no }}
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <strong>Order No.:</strong> {{ report_data.order_no }}<br>
+                                <strong>Shipment Size:</strong> {{ report_data.shipment_size }}<br>
+                                <strong>Location:</strong> {{ report_data.location }}
+                            </div>
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col-md-6 text-start">
+                                <strong>Inspected by:</strong> {{ report_data.inspector }}
+                            </div>
+                            <div class="col-md-6 text-start">
+                                <strong>Date:</strong> {{ report_data.date }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inspection Data Table -->
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th rowspan="2" class="text-center align-middle">Item</th>
+                                    <th rowspan="2" class="text-center align-middle">Description</th>
+                                    <th rowspan="2" class="text-center align-middle">Min</th>
+                                    <th rowspan="2" class="text-center align-middle">Max</th>
+                                    <th rowspan="2" class="text-center align-middle">Unit</th>
+                                    <th colspan="10" class="text-center">Sample Data</th>
+                                </tr>
+                                <tr>
+                                    {% for i in range(1, 11) %}
+                                    <th class="text-center">{{ i }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item_key, item_data in report_data.items_data.items() %}
+                                <tr>
+                                    <td class="text-center"><strong>{{ item_data.item }}</strong></td>
+                                    <td>{{ item_data.description }}</td>
+                                    <td class="text-center">{{ item_data.min_limit }}</td>
+                                    <td class="text-center">{{ item_data.max_limit }}</td>
+                                    <td class="text-center">{{ item_data.unit }}</td>
+                                    {% for i in range(10) %}
+                                    <td class="text-center">
+                                        {% if item_data.datapoints[i] is not none %}
+                                            {{ item_data.datapoints[i] }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    {% endfor %}
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Statistics Summary -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <h6>Statistical Summary</h6>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Item</th>
+                                            <th>Count</th>
+                                            <th>Average</th>
+                                            <th>Min Value</th>
+                                            <th>Max Value</th>
+                                            <th>Range</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item_key, item_data in report_data.items_data.items() %}
+                                        {% set valid_points = [] %}
+                                        {% for dp in item_data.datapoints %}
+                                            {% if dp is not none %}
+                                                {% set _ = valid_points.append(dp) %}
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% if valid_points %}
+                                        <tr>
+                                            <td><strong>{{ item_data.item }}</strong></td>
+                                            <td>{{ valid_points | length }}</td>
+                                            <td>{{ "%.3f" | format(valid_points | sum / valid_points | length) }}</td>
+                                            <td>{{ "%.3f" | format(valid_points | min) }}</td>
+                                            <td>{{ "%.3f" | format(valid_points | max) }}</td>
+                                            <td>{{ "%.3f" | format(valid_points | max - valid_points | min) }}</td>
+                                        </tr>
+                                        {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Signature Area -->
+                    <div class="row mt-5">
+                        <div class="col-md-6">
+                            <div class="border-top pt-2 text-center">
+                                <strong>Inspector Signature</strong><br>
+                                {{ report_data.inspector }}
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="border-top pt-2 text-center">
+                                <strong>Date</strong><br>
+                                {{ report_data.date }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ url_for('confirm_data') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                    </a>
+                    <div>
+                        <a href="{{ url_for('generate_report') }}" class="btn btn-success">
+                            <i class="fas fa-file-excel me-2"></i>{{ get_text('download_excel') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.report-preview {
+    font-family: 'Arial', sans-serif;
+    font-size: 14px;
+    line-height: 1.4;
+}
+
+.report-preview table {
+    font-size: 12px;
+}
+
+.report-preview th {
+    background-color: #f8f9fa !important;
+    font-weight: 600;
+}
+
+@media print {
+    .card-header,
+    .btn,
+    .navbar,
+    .step-indicator {
+        display: none !important;
+    }
+    
+    .report-preview {
+        border: none !important;
+        padding: 0 !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Print functionality
+function printReport() {
+    window.print();
+}
+
+// Add keyboard shortcut for print
+$(document).keydown(function(e) {
+    if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        printReport();
+    }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="text-center mb-5">
+            <h1 class="display-4 text-primary">
+                <i class="fas fa-clipboard-check me-3"></i>{{ get_text('title') }}
+            </h1>
+            <p class="lead text-muted">{{ get_text('title') }} - Johnson Electric Manufacturing Department</p>
+        </div>
+        
+        <div class="row g-4">
+            <!-- New Report Card -->
+            <div class="col-md-6">
+                <div class="card h-100 border-primary">
+                    <div class="card-body text-center p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-plus-circle text-primary" style="font-size: 4rem;"></i>
+                        </div>
+                        <h3 class="card-title text-primary">{{ get_text('new_report') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ get_text('new_report') if current_lang == 'en' else '建立新的檢驗報告，輸入檢驗數據並生成OIR報告' if current_lang == 'zh-TW' else '创建新的检验报告，输入检验数据并生成OIR报告' }}
+                        </p>
+                        <a href="{{ url_for('new_report') }}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-arrow-right me-2"></i>{{ get_text('new_report') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- History Report Card -->
+            <div class="col-md-6">
+                <div class="card h-100 border-success">
+                    <div class="card-body text-center p-5">
+                        <div class="mb-4">
+                            <i class="fas fa-history text-success" style="font-size: 4rem;"></i>
+                        </div>
+                        <h3 class="card-title text-success">{{ get_text('history_report') }}</h3>
+                        <p class="card-text text-muted mb-4">
+                            {{ 'Search and view historical inspection reports' if current_lang == 'en' else '搜尋和查看歷史檢驗報告記錄' if current_lang == 'zh-TW' else '搜索和查看历史检验报告记录' }}
+                        </p>
+                        <a href="{{ url_for('history_report') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-search me-2"></i>{{ get_text('history_report') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- System Information -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card bg-light">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            <i class="fas fa-info-circle me-2"></i>
+                            {{ 'System Information' if current_lang == 'en' else '系統資訊' if current_lang == 'zh-TW' else '系统信息' }}
+                        </h5>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <h6 class="text-muted">{{ 'Features' if current_lang == 'en' else '功能特色' if current_lang == 'zh-TW' else '功能特色' }}</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-check text-success me-2"></i>{{ 'Digital data input' if current_lang == 'en' else '數位化資料輸入' if current_lang == 'zh-TW' else '数字化数据输入' }}</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>{{ 'Excel report generation' if current_lang == 'en' else 'Excel報告生成' if current_lang == 'zh-TW' else 'Excel报告生成' }}</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>{{ 'PDF export' if current_lang == 'en' else 'PDF匯出' if current_lang == 'zh-TW' else 'PDF导出' }}</li>
+                                    <li><i class="fas fa-check text-success me-2"></i>{{ 'Multi-language support' if current_lang == 'en' else '多語言支援' if current_lang == 'zh-TW' else '多语言支持' }}</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="text-muted">{{ 'Supported Languages' if current_lang == 'en' else '支援語言' if current_lang == 'zh-TW' else '支持语言' }}</h6>
+                                <ul class="list-unstyled">
+                                    <li><i class="fas fa-globe text-primary me-2"></i>English</li>
+                                    <li><i class="fas fa-globe text-primary me-2"></i>繁體中文</li>
+                                    <li><i class="fas fa-globe text-primary me-2"></i>简体中文</li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="text-muted">{{ 'System Status' if current_lang == 'en' else '系統狀態' if current_lang == 'zh-TW' else '系统状态' }}</h6>
+                                <p class="mb-1">
+                                    <span class="badge bg-success">{{ 'Prototype' if current_lang == 'en' else '原型版本' if current_lang == 'zh-TW' else '原型版本' }}</span>
+                                </p>
+                                <p class="text-muted small mb-0">{{ 'Excel-based database' if current_lang == 'en' else '基於Excel的資料庫' if current_lang == 'zh-TW' else '基于Excel的数据库' }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

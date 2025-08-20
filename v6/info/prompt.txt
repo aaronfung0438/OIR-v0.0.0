@@ -1,0 +1,104 @@
+#content# 
+I am an junior engineer and now developing an solution for my company, Johnson electric, manufacturing department to reduce data inputting time.
+You are a experienced expert in coding and will help me build up the structure of my solution.
+Note that i will only use excel for database as its a prototype only.
+
+Documents:
+1.Outgoing Inspection Standard: a level of quality they need to follow in excel form with below columns Its like a database .
+    - OIS No. (e.g. DCCDC-IS-11301110)                
+    - Model Code (e.g. 1999-1130111)	       
+    - Model Desc. (e.g.  DCJ72(4)MLG-1130111)
+    - Model Version (e.g.  E)
+    - Item: (e.g. 1,2,3,4,5) I want 1 to 5 in demo
+    - SC Symbol ( it will be empty)
+    - Description (e.g. dimension_1, dimension_2,....) 
+    - Minimum Limit 
+    - Maximum Limit	
+    - Median	
+    - Unit (e.g. mm)	
+    - A.QAL(%) of Sample Size (e.g. 10)
+    - Type of Data ( A/V/B)
+    - Measurement Equipment ( Caliper, Height indicator, Projector,...) different measurement equipment leads to different description e.g. dimension_1 dimension_2...
+2. Outgoing Inspection Report 
+    - Model No. (as same as model code)                     
+    - Order No. ( e.g. 9236081473/14755/1474-1.1)   
+    - Shipment Size(e.g.. 1680*3)
+    - Lot No.
+    - Inspected by: ( there should be: Aaron, Alan, Brain only)
+    - Date ( should be today)
+    - OIS No. 
+    - Location: ( e.g. W2ATMCA18#)	
+    
+OIR_Report_Sample.xslx is an template.
+
+ Our current solution is:
+1. Operator will receive a form everyday with log number and following information.
+2. They will check different log and products based on the form by measuring dimensions of the products. They will manually record the data and write them on a form first.
+For each attribute, they need to measure 10 datapoints.
+3. Then, it will be manually inputted to excel and transform to an OIR_Report.
+
+
+
+
+I would like to make it paperless and digitalized. It should be involved front end and back end. I will handle backend first and make sure all the data processing. then set up a website for it.
+
+My solution:
+1. Operator enter Model No. , OIS No. Inspector By 
+2. operators input 10 datapoints for each attribute  via tablets . all data will be stored in a temporary excel.
+3. Generate an OIR report after inputting all attributes in below flow.
+    - Ask users in UI to confirm all datapoints.
+    - Ask for Order No. Shipment Size Lot No. Location
+    - Fill the data into a temporaty OIR_Report named as (OIR_todaydate_ModelCode_OISNo.)
+    - Show a preview in UI
+    - Ask users they want a pdf of excel
+    - export it to download
+    - Save the data into a database in excel
+
+OIR_database:
+    - Date
+    - Model No.
+    - Model Desciption
+    - OIS No.
+    - Item
+    - Datapoint_1
+    - Datapoint_2
+    - ... till Datapoint_10
+    - Operator ( as same as Inspector By)
+
+
+
+#objective# I would like you to judge me and find my potential problems in a cs expert. Ask me question to clarify my requirement.
+#style# formal
+#audience# me
+#response# detailed explanation
+
+
+1. 多語言支援細節
+需要支援哪些語言？（繁體中文、英文、其他？）
+介面文字和Excel報告內容都需要多語言嗎？
+操作員如何切換語言？
+2. 歷史報告生成功能
+歷史報告的查詢條件有哪些？（日期範圍、Model No.、Lot No.、操作員？）
+如果查詢結果有多筆記錄，是否需要分別生成多份報告，還是合併成一份？
+歷史報告的檔案命名規則是什麼？
+3. Excel檔案管理
+臨時Excel檔案何時刪除？（報告生成後立即刪除還是保留一段時間？）
+如果同一時間有多個操作員生成報告，臨時檔案如何避免衝突？
+OIR_database.xlsx檔案備份機制如何處理？
+4. 資料輸入驗證
+雖然不需要Min/Max驗證，但是否需要檢查數據格式（例如：必須是數字）？
+OIS No.和Model No.是否需要驗證格式正確性？
+如果輸入的OIS No.在OIS工作表中不存在，如何處理？
+5. 報告預覽與匯出
+PDF匯出是否需要特定格式設定？
+預覽功能是顯示Excel格式還是網頁格式？
+下載的檔案是否需要特定的儲存位置？
+6. 系統架構細節
+10個操作員同時使用時，Excel檔案的讀寫鎖定如何處理？
+是否需要使用者登入功能來識別操作員？
+系統錯誤（例如Excel檔案損壞）時的處理機制？
+
+
+
+
+

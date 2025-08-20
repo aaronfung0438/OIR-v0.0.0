@@ -1,0 +1,162 @@
+OIR Report Workflow Analysis Questionnaire
+==========================================
+
+Background Information
+======================
+
+Project Background
+------------------
+OIR reports (Outgoing Inspection Report) are important documents used in manufacturing to record product inspection results before shipment. These reports help ensure that products meet quality standards and specifications before delivery to customers, and are an important component of our quality management system.
+
+Why Analyze OIR Report Workflow?
+--------------------------------
+With business development and technological advancement, we hope to explore how to make the OIR report generation process more efficient and convenient. By gaining an in-depth understanding of everyone's current work methods, we can identify improvement opportunities and design more suitable tools and systems for everyone.
+
+What We Want to Understand
+--------------------------
+- Understand how everyone currently generates OIR reports
+- Understand the personnel and roles involved in the entire process
+- Understand everyone's work experience and feelings
+- Understand expectations and suggestions for improvements
+
+Aspects We Are Unclear About
+----------------------------
+- What is the current workflow specifically?
+- What personnel are involved?
+- What are everyone's responsibilities?
+- What tools and systems are used?
+- How long does the entire process take?
+- What challenges are encountered?
+
+Improvement Vision
+-----------------
+Our goal is to make work more convenient and efficient, reduce repetitive work, improve data accuracy, enhance team collaboration experience, and provide better work tools for everyone.
+
+Questionnaire Guidelines
+-----------------------
+- Please answer questions based on your actual work experience
+- If a question is not applicable to your situation, please mark "Not Applicable"
+- Please share your genuine thoughts and suggestions
+- If there are unclear points, please ask at any time
+- Your opinions are very important to us, please answer carefully
+
+---
+
+Questionnaire Questions
+======================
+
+I. Report Basic Information
+---------------------------
+
+1. Report Variable Identification
+Description: Please describe the basic information variables contained in OIR reports. These variables are used to identify and distinguish different reports. This is a very important question, please answer in detail.
+Question: What basic information variables are included in OIR reports? (Such as OIS number, model, customer drawing, order number, shipment size, lot number, etc.) Please explain the meaning of each variable and whether these variables will be repeated in different reports?
+Sample Answer:
+- OIS Number (OIS No.): Unique number for each report, will not be repeated
+- Model: Product model, may be repeated in different reports (e.g., multiple batches of same model products)
+- Customer Drawing: Customer-provided drawing number, may be repeated in different reports
+- Order Number (Order No.): Customer order number, may be repeated in different reports (e.g., batch shipments)
+- Shipment Size: Product quantity for this shipment, different for each report
+- Lot Number (Lot No.): Production batch number, different for each report
+
+Important Reminder: This question is very important for system design. Please be sure to explain all variables and their repeatability in detail, as this will directly affect database structure and system function design.
+
+II. Personnel and Work Organization
+----------------------------------
+
+2. Personnel Identification
+Description: Please list all personnel involved in the OIR report generation process, including direct and indirect participants. If certain work is done by the same person, please explain the specific situation.
+Question: What personnel are involved in the OIR report generation process? What is each person's specific work content?
+Sample Answer 1 (Multiple Division): Measurement operator responsible for measurement, data entry operator responsible for input, report generator responsible for generating reports, quality reviewer responsible for review
+Sample Answer 2 (One Person Complete): Quality inspector responsible for all work, including measurement, data input, report generation and review
+Sample Answer 3 (Partial Division): Measurement operator responsible for measurement and data input, supervisor responsible for report generation and review
+
+3. Personnel Quantity Statistics
+Description: Please count the number of personnel involved in report generation, including situations where one person completes all work.
+Question: How many people on average participate in OIR report generation per day? How many people work simultaneously at most per hour? (If only one person works, please explain the specific situation)
+Sample Answer 1: Average 8 people participate per day, maximum 5 people work simultaneously per hour (3 people measuring in the morning, 2 people data processing in the afternoon)
+Sample Answer 2: Only 1 person responsible for all work, including measurement, data input, report generation and review
+
+4. Measurement Work Assignment Mode
+Description: Please explain how measurement operators' work is assigned. We use numbering to represent: Report Number_Item Number, for example 1_2 means Item 2 of Report 1.
+Question: How do measurement operators conduct measurements? Please explain the specific work assignment mode.
+
+Work Mode Examples:
+Mode A: Measure by Report
+- Measurement Operator A responsible for measuring all items of Report 1: 1_1, 1_2, 1_3
+- Measurement Operator B responsible for measuring all items of Report 2: 2_1, 2_2, 2_3
+- Measurement Operator C responsible for measuring all items of Report 3: 3_1, 3_2, 3_3
+
+Mode B: Measure by Item
+- Measurement Operator A responsible for measuring Item 1 of all reports: 1_1, 2_1, 3_1
+- Measurement Operator B responsible for measuring Item 2 of all reports: 1_2, 2_2, 3_2
+- Measurement Operator C responsible for measuring Item 3 of all reports: 1_3, 2_3, 3_3
+
+Mode C: Mixed Mode
+- Measurement Operator A responsible for measuring Item 1 of Report 1 and Report 2: 1_1, 2_1
+- Measurement Operator B responsible for measuring Item 2 of Report 2 and Report 3: 2_2, 3_2
+
+Actual Work Example:
+- If Report 1 is Product A, Item 1 is length, Item 2 is width, Item 3 is height
+- Then 1_1 is the length measurement of Product A
+- 1_2 is the width measurement of Product A
+- 1_3 is the height measurement of Product A
+
+Please choose or describe the mode you use:
+Sample Answer 1: We use Mode A, each measurement operator is responsible for measuring all items of one product
+Sample Answer 2: We use Mode B, each measurement operator specializes in measuring the same item of all products
+Sample Answer 3: We use mixed mode, flexibly assigned according to product type and measurement items, please describe in detail
+Sample Answer 4: We use other modes, please describe in detail
+
+III. Workflow
+-------------
+
+5. Report Type Identification
+Description: Please describe the types of OIR reports you use. Different types of reports may have different measurement methods and standards.
+Question: What types of OIR reports do you use? (Such as dimension reports, appearance reports, performance reports, etc.)
+Sample Answer: Mainly use dimension reports (measuring product length, width, height, angles, etc.) and appearance reports (checking surface defects, color, gloss, etc.)
+
+6. Workflow Steps
+Description: Please describe in detail the complete workflow from start to finish. Include specific operations and time arrangements for each step.
+Question: Please describe the complete process of generating an OIR report, all steps from data collection to report completion.
+Sample Answer: 1. Operator measures product dimensions → 2. Records measurement data on paper forms → 3. Data entry operator inputs data into Excel → 4. Checks data accuracy → 5. Generates report → 6. Supervisor review → 7. Prints report → 8. Archives
+
+7. Time Arrangement Analysis
+Description: Please describe the actual work time arrangement, whether fixed time or flexible arrangement. Include time allocation for each step.
+Question: How is work time arranged? How long does each step take? (Please describe the actual work time arrangement)
+Sample Answer 1: Fixed time: 8:00-12:00 AM for measurement work, 1:00-5:00 PM for data processing and report generation. Measuring each product takes about 15 minutes, data input takes about 10 minutes, report generation takes about 20 minutes
+Sample Answer 2: Flexible arrangement: Conduct measurement and report generation according to product completion situation, no fixed time arrangement
+
+IV. Data Management Analysis
+----------------------------
+
+8. Data Input Process
+Description: Please describe the complete process of data from collection to input, regardless of method used. Include data conversion and verification steps.
+Question: How are measurement data recorded and input into the system? (Please describe the complete process)
+Sample Answer 1: Paper records → Manual input into Excel spreadsheets → Check if input is correct → Save file
+Sample Answer 2: Direct use of tablet computers to record and sync to system
+Sample Answer 3: Use measurement equipment to directly transmit data to computer
+
+9. Data Verification Mechanism
+Description: Please describe how to ensure data accuracy and completeness. Include inspection methods and exception handling processes.
+Question: How do you verify the accuracy of input data? What inspection mechanisms are there?
+Sample Answer: After data input, manual review is conducted, checking if values are within reasonable ranges, abnormal data will be re-measured for confirmation
+
+V. Current System Usage
+-----------------------
+
+10. Current Tool Usage
+Description: Please describe the tools and systems currently used. Include system function characteristics and ease of use.
+Question: What tools or systems do you currently use to generate OIR reports?
+Sample Answer: Mainly use Excel spreadsheets, with standard template formats, including product information, measurement data, calculation results and other fields
+
+11. System Stability Assessment
+Description: Please assess the stability and reliability of the current system. Include system operation status and problem handling methods.
+Question: Is the current system running stably? Do problems occur frequently?
+Sample Answer: Basically stable, occasionally file corruption or data loss occurs, requiring re-input of data
+
+---
+
+Summary: This questionnaire contains 11 core questions, covering key aspects such as report basic information, personnel organization, workflow, data management, and system usage, aiming to gain an in-depth understanding of the current status and improvement needs of OIR report generation.
+
+

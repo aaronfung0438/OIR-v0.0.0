@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Additional Information' if current_lang == 'en' else '額外資訊' if current_lang == 'zh-TW' else '额外信息' }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Select Records' if current_lang == 'en' else '選擇記錄' if current_lang == 'zh-TW' else '选择记录' }}</span>
+            </div>
+            <div class="step active">
+                <div class="step-number">2</div>
+                <span>{{ 'Additional Info' if current_lang == 'en' else '額外資訊' if current_lang == 'zh-TW' else '额外信息' }}</span>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <span>{{ 'Generate Report' if current_lang == 'en' else '生成報告' if current_lang == 'zh-TW' else '生成报告' }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>{{ 'Additional Information Required' if current_lang == 'en' else '需要額外資訊' if current_lang == 'zh-TW' else '需要额外信息' }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-info">
+                    <i class="fas fa-info-circle me-2"></i>
+                    {{ 'You have selected' if current_lang == 'en' else '您已選擇了' if current_lang == 'zh-TW' else '您已选择了' }} 
+                    <strong>{{ selected_count }}</strong> 
+                    {{ 'record(s). Please provide additional information to generate the report.' if current_lang == 'en' else '筆記錄。請提供額外資訊以生成報告。' if current_lang == 'zh-TW' else '条记录。请提供额外信息以生成报告。' }}
+                </div>
+
+                <form method="POST" action="{{ url_for('generate_history_report') }}" id="historyAdditionalInfoForm">
+                    <div class="row g-3">
+                        <!-- Basic Info Display (Read-only) -->
+                        <div class="col-md-6">
+                            <label class="form-label">{{ get_text('model_no') }}</label>
+                            <input type="text" class="form-control" value="{{ default_data.model_no }}" readonly>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">{{ get_text('ois_no') }}</label>
+                            <input type="text" class="form-control" value="{{ default_data.ois_no }}" readonly>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">{{ get_text('inspector') }}</label>
+                            <input type="text" class="form-control" value="{{ default_data.inspector }}" readonly>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label">{{ get_text('lot_no') }}</label>
+                            <input type="text" class="form-control" value="{{ default_data.lot_no }}" readonly>
+                        </div>
+
+                        <!-- Additional Info (Editable) -->
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-primary">{{ 'Additional Information' if current_lang == 'en' else '額外資訊' if current_lang == 'zh-TW' else '额外信息' }}</h6>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="order_no" class="form-label required">
+                                <i class="fas fa-receipt me-1"></i>{{ 'Order No.' if current_lang == 'en' else '訂單號' if current_lang == 'zh-TW' else '订单号' }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="order_no" 
+                                   name="order_no"
+                                   placeholder="{{ 'Enter order number' if current_lang == 'en' else '輸入訂單號' if current_lang == 'zh-TW' else '输入订单号' }}"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="shipment_size" class="form-label required">
+                                <i class="fas fa-boxes me-1"></i>{{ 'Shipment Size' if current_lang == 'en' else '出貨數量' if current_lang == 'zh-TW' else '出货数量' }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="shipment_size" 
+                                   name="shipment_size"
+                                   placeholder="{{ 'e.g. 1680*3' if current_lang == 'en' else '例如：1680*3' if current_lang == 'zh-TW' else '例如：1680*3' }}"
+                                   required>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">
+                                <i class="fas fa-map-marker-alt me-1"></i>{{ 'Location' if current_lang == 'en' else '地點' if current_lang == 'zh-TW' else '地点' }}
+                            </label>
+                            <input type="text" 
+                                   class="form-control" 
+                                   id="location" 
+                                   name="location"
+                                   placeholder="{{ 'Enter location' if current_lang == 'en' else '輸入地點' if current_lang == 'zh-TW' else '输入地点' }}">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('history_report') }}" class="btn btn-outline-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>{{ get_text('back') }}
+                        </a>
+                        <button type="submit" class="btn btn-success" id="generateBtn">
+                            <i class="fas fa-file-excel me-2"></i>{{ 'Generate Excel Report' if current_lang == 'en' else '生成Excel報告' if current_lang == 'zh-TW' else '生成Excel报告' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.step:not(:last-child):after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background: #dee2e6;
+    z-index: 1;
+}
+
+.step.completed:not(:last-child):after {
+    background: #28a745;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+}
+
+.step.completed .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.step.active .step-number {
+    background: #007bff;
+    color: white;
+}
+
+.step span {
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.step.completed span {
+    color: #28a745;
+}
+
+.step.active span {
+    color: #007bff;
+}
+
+.required:after {
+    content: ' *';
+    color: #dc3545;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Form submission with loading indicator
+    $('#historyAdditionalInfoForm').on('submit', function() {
+        const submitBtn = $('#generateBtn');
+        const originalText = submitBtn.html();
+        
+        submitBtn.html('<i class="fas fa-spinner fa-spin me-2"></i>{{ "Generating..." if current_lang == "en" else "生成中..." if current_lang == "zh-TW" else "生成中..." }}');
+        submitBtn.prop('disabled', true);
+        
+        // Note: The form will submit normally, and the server will handle the download
+        // The loading state will be cleared when the page reloads or redirects
+    });
+});
+</script>
+{% endblock %}

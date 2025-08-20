@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Report Generated' if current_lang == 'en' else '報告已生成' if current_lang == 'zh-TW' else '报告已生成' }} - {{ get_text('title') }}{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Step Indicator -->
+        <div class="step-indicator">
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Select Records' if current_lang == 'en' else '選擇記錄' if current_lang == 'zh-TW' else '选择记录' }}</span>
+            </div>
+            <div class="step completed">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Additional Info' if current_lang == 'en' else '額外資訊' if current_lang == 'zh-TW' else '额外信息' }}</span>
+            </div>
+            <div class="step active">
+                <div class="step-number"><i class="fas fa-check"></i></div>
+                <span>{{ 'Generate Report' if current_lang == 'en' else '生成報告' if current_lang == 'zh-TW' else '生成报告' }}</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-check-circle me-2"></i>{{ 'Report Generated Successfully' if current_lang == 'en' else '報告生成成功' if current_lang == 'zh-TW' else '报告生成成功' }}
+                </h4>
+            </div>
+            <div class="card-body p-4">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle me-2"></i>
+                    {{ 'Your Excel report has been generated successfully and is ready for download.' if current_lang == 'en' else '您的Excel報告已成功生成，可以下載了。' if current_lang == 'zh-TW' else '您的Excel报告已成功生成，可以下载了。' }}
+                </div>
+
+                <!-- Report Information -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">{{ 'Report Information' if current_lang == 'en' else '報告資訊' if current_lang == 'zh-TW' else '报告信息' }}</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>{{ 'File Name' if current_lang == 'en' else '檔案名稱' if current_lang == 'zh-TW' else '文件名称' }}:</strong> {{ report_info.filename }}</li>
+                            <li><strong>{{ 'Model No.' if current_lang == 'en' else '型號' if current_lang == 'zh-TW' else '型号' }}:</strong> {{ report_info.report_data.model_no }}</li>
+                            <li><strong>{{ 'OIS No.' if current_lang == 'en' else 'OIS編號' if current_lang == 'zh-TW' else 'OIS编号' }}:</strong> {{ report_info.report_data.ois_no }}</li>
+                            <li><strong>{{ 'Order No.' if current_lang == 'en' else '訂單號' if current_lang == 'zh-TW' else '订单号' }}:</strong> {{ report_info.report_data.order_no }}</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-primary">{{ 'Additional Details' if current_lang == 'en' else '額外詳情' if current_lang == 'zh-TW' else '额外详情' }}</h6>
+                        <ul class="list-unstyled">
+                            <li><strong>{{ 'Shipment Size' if current_lang == 'en' else '出貨數量' if current_lang == 'zh-TW' else '出货数量' }}:</strong> {{ report_info.report_data.shipment_size }}</li>
+                            <li><strong>{{ 'Lot No.' if current_lang == 'en' else '批號' if current_lang == 'zh-TW' else '批号' }}:</strong> {{ report_info.report_data.lot_no }}</li>
+                            <li><strong>{{ 'Location' if current_lang == 'en' else '地點' if current_lang == 'zh-TW' else '地点' }}:</strong> {{ report_info.report_data.location or '-' }}</li>
+                            <li><strong>{{ 'Items Count' if current_lang == 'en' else '項目數量' if current_lang == 'zh-TW' else '项目数量' }}:</strong> {{ report_info.items_count if report_info.items_count else 0 }}</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Download Section -->
+                <div class="text-center mb-4">
+                    <div class="p-4 bg-light rounded">
+                        <i class="fas fa-file-excel text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3 mb-3">{{ 'Excel Report Ready' if current_lang == 'en' else 'Excel報告準備就緒' if current_lang == 'zh-TW' else 'Excel报告准备就绪' }}</h5>
+                        <a href="{{ url_for('download_generated_report') }}" class="btn btn-success btn-lg">
+                            <i class="fas fa-download me-2"></i>{{ 'Download Excel Report' if current_lang == 'en' else '下載Excel報告' if current_lang == 'zh-TW' else '下载Excel报告' }}
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-flex justify-content-between">
+                    <a href="{{ url_for('history_report') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-search me-2"></i>{{ 'New Search' if current_lang == 'en' else '新搜尋' if current_lang == 'zh-TW' else '新搜索' }}
+                    </a>
+                    <a href="{{ url_for('index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-home me-2"></i>{{ 'Back to Home' if current_lang == 'en' else '返回首頁' if current_lang == 'zh-TW' else '返回首页' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.step-indicator {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    position: relative;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    position: relative;
+}
+
+.step:not(:last-child):after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 60%;
+    width: 80%;
+    height: 2px;
+    background: #dee2e6;
+    z-index: 1;
+}
+
+.step.completed:not(:last-child):after {
+    background: #28a745;
+}
+
+.step-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #dee2e6;
+    color: #6c757d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+    position: relative;
+    z-index: 2;
+    font-weight: bold;
+}
+
+.step.completed .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.step.active .step-number {
+    background: #28a745;
+    color: white;
+}
+
+.step span {
+    font-size: 0.9rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.step.completed span {
+    color: #28a745;
+}
+
+.step.active span {
+    color: #28a745;
+}
+
+.bg-light {
+    background-color: #f8f9fa!important;
+    border: 1px solid #e9ecef;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Auto-download the file after a short delay (optional)
+    // setTimeout(function() {
+    //     window.location.href = '{{ url_for("download_generated_report") }}';
+    // }, 2000);
+});
+</script>
+{% endblock %}
